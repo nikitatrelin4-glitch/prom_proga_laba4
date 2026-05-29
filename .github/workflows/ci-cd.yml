@@ -47,8 +47,12 @@ jobs:
           ./build/app &
           PID=$!
           sleep 3
+          echo "Checking /health endpoint..."
           curl --retry 5 --retry-delay 1 --fail http://localhost:8080/health || exit 1
-          bash tests/integration_test.sh
+          echo "Checking root / endpoint..."
+          curl --fail http://localhost:8080/ || exit 1
+          echo "Checking /metrics endpoint..."
+          curl --fail http://localhost:8080/metrics || exit 1
           kill $PID
 
       - name: Run load test (wrk)
