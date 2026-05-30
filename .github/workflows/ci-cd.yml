@@ -68,7 +68,6 @@ jobs:
     needs: build-and-test
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    # ДОБАВЛЯЕМ ЭТИ СТРОКИ ДЛЯ ВЫДАЧИ ПРАВ:
     permissions:
       contents: read
       packages: write
@@ -78,13 +77,12 @@ jobs:
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Convert repository name to lowercase
-        run: |
-          echo "REPO_LOWER=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" » $GITHUB_ENV
-
       - name: Build and push image
         run: |
-          IMAGE_TAG=ghcr.io/${{ env.REPO_LOWER }}:latest
+          # Переводим путь к репозиторию в нижний регистр прямо здесь
+          OWNER_REPO="${{ github.repository }}"
+          IMAGE_TAG="ghcr.io/${OWNER_REPO,,}:latest"
+          
           docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
 
