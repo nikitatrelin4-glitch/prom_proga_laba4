@@ -64,7 +64,7 @@ jobs:
         run: |
           # Находим, какая именно версия clang-tidy установилась, и делаем на неё ссылку
           CLANG_TIDY_BIN=$(which clang-tidy-15 || which clang-tidy-14 || which clang-tidy-13 || which clang-tidy)
-          $CLANG_TIDY_BIN src/main.cpp – -I. -I./SIC
+          $CLANG_TIDY_BIN -p build src/main.cpp – -I. -I./SIC
 
   docker-build-push:
     needs: build-and-test
